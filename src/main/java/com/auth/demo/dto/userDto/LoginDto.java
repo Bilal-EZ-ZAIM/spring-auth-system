@@ -1,27 +1,12 @@
 package com.auth.demo.dto.userDto;
 
+import com.auth.demo.ValidationMessages.ValidationMessages;
+
 import jakarta.validation.constraints.*;
-// import lombok.*;
-
-// @Getter
-// @Setter
-// @NoArgsConstructor
-// @AllArgsConstructor
-// @Builder
-// public class LoginDto {
-
-//     @NotBlank(message = "Email is required")
-//     @Email(message = "Email should be valid")
-//     private String email;
-
-//     @NotBlank(message = "Password is required")
-//     @Size(min = 8, message = "Password must be at least 8 characters")
-//     private String password;
-// }
 
 public record LoginDto(
 
-        @NotBlank(message = "Email is required") @Email(message = "Email should be valid") String email,
+                @NotBlank(message = ValidationMessages.EMAIL_REQUIRED) @Email(message = ValidationMessages.EMAIL_INVALID) String email,
 
-        @NotBlank(message = "Password is required") @Size(min = 8, message = "Password must be at least 8 characters") String password) {
+                @NotBlank(message = ValidationMessages.PASSWORD_REQUIRED) @Size(min = 8, message = ValidationMessages.PASSWORD_TOO_SHORT) String password) {
 }

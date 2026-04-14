@@ -11,11 +11,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 
 @Getter
-@JsonPropertyOrder({ "statusCode", "status", "message", "data", "errors", "timestamp" })
+@JsonPropertyOrder({ "status", "message", "data", "errors", "timestamp" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
 
-    private final int statusCode;
     private final ResponseStatus status;
     private final String message;
     private final T data;
@@ -24,9 +23,8 @@ public class ApiResponse<T> {
     private final LocalDateTime timestamp;
 
     // ✅ SUCCESS
-    public ApiResponse(T data, String message, int statusCode) {
+    public ApiResponse(T data, String message) {
         this.status = ResponseStatus.SUCCESS;
-        this.statusCode = statusCode;
         this.message = message;
         this.data = data;
         this.errors = null;
@@ -34,9 +32,8 @@ public class ApiResponse<T> {
     }
 
     // ✅ ERROR
-    public ApiResponse(String message, List<?> errors, int statusCode) {
+    public ApiResponse(String message, List<?> errors) {
         this.status = ResponseStatus.ERROR;
-        this.statusCode = statusCode;
         this.message = message;
         this.data = null;
         this.errors = errors;

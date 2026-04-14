@@ -88,8 +88,7 @@ public class GlobalExceptionHandler {
 
         ApiResponse<Object> response = new ApiResponse<>(
                 message,
-                errors,
-                status.value());
+                errors);
 
         return ResponseEntity.status(status).body(response);
     }

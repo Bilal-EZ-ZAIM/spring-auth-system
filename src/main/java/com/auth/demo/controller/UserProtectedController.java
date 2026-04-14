@@ -25,11 +25,14 @@ public class UserProtectedController {
     public ResponseEntity<ApiResponse<UserResponseDTO>> getMyUser(Authentication authentication) {
 
         String userId = authentication.getName();
-        return userService.getUserByPublicId(UUID.fromString(userId));
+        return ResponseEntity.ok(new ApiResponse<>(userService.getUserByPublicId(UUID.fromString(userId)),
+                "User details retrieved"));
     }
 
     @GetMapping("test")
-    public String test(Authentication authentication) {
-        return "Hello, " + authentication.getName() + "! This is a protected endpoint.";
+    public ResponseEntity<ApiResponse<String>> test(Authentication authentication) {
+        return ResponseEntity.ok(new ApiResponse<>(
+                "Hello, " + authentication.getName() + "! This is a protected endpoint.", "Test successful"));
     }
+
 }
