@@ -11,7 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+@EnableMethodSecurity
 @Configuration
 public class SecurityConfig {
 
@@ -25,70 +27,54 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ disable CSRF (stateless API)
-            .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable())
 
-            // ❌ no session (JWT only)
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // 🌍 CORS (important for frontend)
-            .cors(cors -> {})
-
-            // 🔐 Authorization rules
-            .authorizeHttpRequests(auth -> auth
-
-                // PUBLIC AUTH ROUTES
-                .requestMatchers("/api/v1/auth/**").permitAll()
-
-                // SWAGGER (optional but common)
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
-                // PUBLIC GET endpoints (optional)
-                .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
-
-                // EVERYTHING ELSE SECURED
-                .anyRequest().authenticated()
-            )
-
-            // 🔥 JWT FILTER
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
-            // ❌ HANDLE UNAUTHORIZED (401)
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json");
-
-                    response.getWriter().write("""
-                        {
-                          "statusCode": 401,
-                          "message": "Unauthorized",
-                          "error": "Authentication required"
-                        }
-                    """);
+                .cors(cors -> {
                 })
 
-                // ❌ HANDLE FORBIDDEN (403)
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    response.setContentType("application/json");
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth/**").permitAll()
 
-                    response.getWriter().write("""
-                        {
-                          "statusCode": 403,
-                          "message": "Forbidden",
-                          "error": "You don't have permission"
-                        }
-                    """);
-                })
-            );
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
+
+                        .anyRequest().authenticated())
+
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+
+                            response.getWriter().write("""
+                                        {
+                                          "statusCode": 401,
+                                          "message": "Unauthorized",
+                                          "error": "Authentication required"
+                                        }
+                                    """);
+                        })
+
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+
+                            response.getWriter().write("""
+                                        {
+                                          "statusCode": 403,
+                                          "message": "Forbidden",
+                                          "error": "You don't have permission"
+                                        }
+                                    """);
+                        }));
 
         return http.build();
     }
 
-    // 🔑 Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

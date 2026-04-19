@@ -30,4 +30,7 @@ public class User extends SecureEntity {
 
     @OneToMany(mappedBy = "user")
     private List<UserSession> userSessions;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserRole> rolesHistory;
 }

@@ -22,7 +22,7 @@ public class ApiResponse<T> {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime timestamp;
 
-    // ✅ SUCCESS
+    // SUCCESS
     public ApiResponse(T data, String message) {
         this.status = ResponseStatus.SUCCESS;
         this.message = message;
@@ -31,7 +31,7 @@ public class ApiResponse<T> {
         this.timestamp = LocalDateTime.now();
     }
 
-    // ✅ ERROR
+    // ERROR
     public ApiResponse(String message, List<?> errors) {
         this.status = ResponseStatus.ERROR;
         this.message = message;

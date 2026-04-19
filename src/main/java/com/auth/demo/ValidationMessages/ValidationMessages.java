@@ -23,4 +23,10 @@ public class ValidationMessages {
 
     // Optional security improvements
     public static final String PASSWORD_WEAK = "Password must contain letters, numbers and special characters";
+
+    // Role
+    public static final String ROLE_NAME_REQUIRED = "Role name is required";
+    public static final String ROLE_NAME_SIZE = "Role name must be between 1 and 20 characters";
+    public static final String ROLE_DESCRIPTION_SIZE = "Role description must not exceed 255 characters";
+    
 }

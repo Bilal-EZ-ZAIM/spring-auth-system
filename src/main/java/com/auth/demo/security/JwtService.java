@@ -32,11 +32,12 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secret.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String email, UUID id, long jwtExpiration) {
+    public String generateToken(String email, Long id, long jwtExpiration, String role) {
         return Jwts.builder()
                 .header().type("JWT").and()
                 .subject(email)
                 .claim("userId", id)
+                .claim("role", role)
                 .issuer(ISSUER)
                 .audience().add(AUDIENCE).and()
                 .issuedAt(new Date())
@@ -50,12 +51,16 @@ public class JwtService {
         return extractClaim(token, claims -> claims.get("userId", String.class));
     }
 
-    public String accessToken(String email, UUID id) {
-        return generateToken(email, id, jwtExpiration);
+    public String accessToken(String email, Long id, String role) {
+        return generateToken(email, id, jwtExpiration, role);
     }
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> resolver) {

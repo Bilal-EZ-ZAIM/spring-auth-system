@@ -12,6 +12,7 @@ import com.auth.demo.enums.ErrorMessage;
 import com.auth.demo.exception.AppException;
 import com.auth.demo.repository.UserRepository;
 import com.auth.demo.security.JwtService;
+import com.auth.demo.services.interfaces.RoleService;
 import com.auth.demo.services.interfaces.UserService;
 import com.github.f4b6a3.uuid.UuidCreator;
 
@@ -24,14 +25,19 @@ public class UserServicesImpl implements UserService {
         private final PasswordEncoder passwordEncoder;
         private final JwtService jwtService;
         private final UserSessionsServiceImpl userSessionsService;
+        private final RoleService roleService;
 
         public UserServicesImpl(UserRepository userRepository,
                         PasswordEncoder passwordEncoder,
-                        JwtService jwtService, UserSessionsServiceImpl userSessionsService) {
+                        JwtService jwtService,
+                        UserSessionsServiceImpl userSessionsService,
+                        RoleService roleService) {
+
                 this.userRepository = userRepository;
                 this.passwordEncoder = passwordEncoder;
                 this.jwtService = jwtService;
                 this.userSessionsService = userSessionsService;
+                this.roleService = roleService;
         }
 
         public UserResponseDTO register(UserCreateDTO dto) {
@@ -64,8 +70,9 @@ public class UserServicesImpl implements UserService {
                 if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
                         throw AppException.badRequest(ErrorMessage.INVALID_CREDENTIALS.getMessage());
                 }
+                String role = roleService.getActiveRoleName(user.getId());
 
-                String accessToken = jwtService.accessToken(user.getEmail(), user.getPublicId());
+                String accessToken = jwtService.accessToken(user.getEmail(), user.getId(), role);
 
                 String refreshToken = UuidCreator.getTimeOrderedEpoch().toString();
                 Boolean sessionCreated = userSessionsService.createSession(user, request, refreshToken);
@@ -84,7 +91,9 @@ public class UserServicesImpl implements UserService {
                 }
 
                 User user = userSessionsService.getUserByRefreshToken(refreshToken);
-                String newAccessToken = jwtService.accessToken(user.getEmail(), user.getPublicId());
+                String role = roleService.getActiveRoleName(user.getId());
+
+                String newAccessToken = jwtService.accessToken(user.getEmail(), user.getId(), role);
 
                 return new AuthResponse(newAccessToken, null);
         }
