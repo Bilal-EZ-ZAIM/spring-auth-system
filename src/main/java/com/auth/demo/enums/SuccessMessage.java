@@ -14,7 +14,13 @@ public enum SuccessMessage {
     ROLE_REVOKED("Role revoked successfully"),
     USER_ROLES_RETRIEVED("User roles retrieved successfully"),
     ROLE_ACTIVATED("Role activated successfully"),
-    ROLE_DEACTIVATED("Role deactivated successfully");
+    ROLE_DEACTIVATED("Role deactivated successfully"),
+    PROJECT_CREATED("Project created successfully"),
+    PROJECT_UPDATED("Project updated successfully"),
+    PROJECT_DELETED("Project deleted successfully"),
+    PROJECT_RETRIEVED("Project retrieved successfully"),
+    PROJECTS_RETRIEVED("Projects retrieved successfully"),
+    SEARCH_SUCCESSFUL("Search completed successfully");
 
     private final String message;
 

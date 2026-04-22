@@ -28,5 +28,10 @@ public class ValidationMessages {
     public static final String ROLE_NAME_REQUIRED = "Role name is required";
     public static final String ROLE_NAME_SIZE = "Role name must be between 1 and 20 characters";
     public static final String ROLE_DESCRIPTION_SIZE = "Role description must not exceed 255 characters";
-    
+
+    // Project
+    public static final String PROJECT_NAME_REQUIRED = "Project name is required";
+    public static final String PROJECT_NAME_ALREADY_EXISTS = "Project name already exists";
+    public static final String PROJECT_NOT_FOUND = "Project not found";
+
 }
